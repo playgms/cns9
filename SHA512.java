@@ -1,43 +1,29 @@
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
-public class SHA512{
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Enter the text to calculate SHA-512 hash: ");
-        String text = scanner.nextLine();
-
+public class SHA512 {
+    public static String encrypt(String input) {
         try {
-
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-
-            digest.update(text.getBytes());
-
-            byte[] hashedBytes = digest.digest();
-
-     
-            StringBuilder hexString = new StringBuilder();
-            for (byte hashedByte : hashedBytes) {
-     
-                String hex = Integer.toHexString(0xff & hashedByte);
-
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-
-                hexString.append(hex);
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hash = no.toString(16);
+            while (hash.length() < 32) {
+                hash = "0" + hash;
             }
-
-            System.out.println("SHA-512 Hash: " + hexString.toString());
-
-        } 
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            return hash;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
-         finally {
-            scanner.close();
-        }
+    }
+
+    public static void main(String args[]) throws NoSuchAlgorithmException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the string to hash: ");
+        String input = sc.nextLine();
+        System.out.println("\nSHA-512 Hash: " + encrypt(input));
+        sc.close();
     }
 }
